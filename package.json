@@ -1,0 +1,23 @@
+{
+  "name": "peoplefinder-azurefunction",
+  "version": "1.0.0",
+  "description": "Find people with common interets written with Azure Function",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ritazh/peoplefinder-azurefunction.git"
+  },
+  "keywords": [
+    "azure",
+    "function"
+  ],
+  "author": "ritazh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ritazh/peoplefinder-azurefunction/issues"
+  },
+  "homepage": "https://github.com/ritazh/peoplefinder-azurefunction#readme"
+}
