@@ -17,7 +17,7 @@ module.exports = function (context, myTimer) {
             'X-Parse-Master-Key': process.env.MASTER_KEY,
             'Content-Type': 'application/json'
         },
-        body: {
+        json: {
             'where': { 
                 "userID": process.env.testUserID
             }, 
@@ -36,5 +36,4 @@ module.exports = function (context, myTimer) {
             context.done();
         }
   });
-    
 };
