@@ -16,6 +16,9 @@
   ],
   "author": "ritazh",
   "license": "ISC",
+  "dependencies": {
+    "request": "^2.0.0"
+  },
   "bugs": {
     "url": "https://github.com/ritazh/peoplefinder-azurefunction/issues"
   },

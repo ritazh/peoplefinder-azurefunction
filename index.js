@@ -26,9 +26,9 @@ module.exports = function (context, myTimer) {
             }
         }
     }, function(err, resp) {
+        context.log('got resp');
         if(err) context.log(err);
         try {
-            context.log('got resp');
             context.log(resp);
         } catch(e) {
             context.log(e);
