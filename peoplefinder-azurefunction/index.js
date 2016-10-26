@@ -1,4 +1,8 @@
-var request = require('request');
+let request = require('request'),
+    mongo = require('mongodb').MongoClient,
+    assert = require('assert');
+
+const connectionString = process.env.DBCONNECT;
 
 module.exports = function (context, myTimer) {
     var timeStamp = new Date().toISOString();
@@ -10,8 +14,19 @@ module.exports = function (context, myTimer) {
     }
     context.log('Node.js timer trigger function ran!', timeStamp); 
 
+    mongo.connect(connectionString, function(err, db) {
+      assert.equal(null, err);
+      var col = db.collection('_User');
+      col.find({chanceEncounterMode:true},{username:1,Location:1,_id:0}).toArray(function(err, docs) {
+        context.log(JSON.stringify(docs));
+      });
+      db.close();
+    });
+
+    var msg = 'Found a match for you!';
+
     request.post({
-        url: 'https://dosttdemo.azurewebsites.net/parse/push',
+        url: process.env.PARSEPUSHURL,
         headers: {
             'X-Parse-Application-Id': process.env.APP_ID,
             'X-Parse-Master-Key': process.env.MASTER_KEY,
@@ -22,7 +37,7 @@ module.exports = function (context, myTimer) {
                 "userID": process.env.testUserID
             }, 
             'data': { 
-                'alert': 'Testing push from Azure Function'
+                'alert': msg
             }
         }
     }, function(err, resp) {
@@ -34,12 +49,11 @@ module.exports = function (context, myTimer) {
             context.log(e);
         } finally {
             context.log('sending SMS...');
-            var msg = 'SMS from Azure function'
-            context.bindings.to = process.env.TWILIO_TO;
-            context.bindings.from = process.env.TWILIO_FROM;
+
             context.bindings.message = {
                 body: msg,
-                to: process.env.TWILIO_TO
+                to: process.env.TWILIO_TO,
+                from: process.env.TWILIO_FROM
             };
             context.done();
         }
