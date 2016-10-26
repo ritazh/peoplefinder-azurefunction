@@ -29,10 +29,18 @@ module.exports = function (context, myTimer) {
         context.log('got resp');
         if(err) context.log(err);
         try {
-            context.log(resp);
+            //context.log(resp);
         } catch(e) {
             context.log(e);
         } finally {
+            context.log('sending SMS...');
+            var msg = 'SMS from Azure function'
+            context.bindings.to = process.env.TWILIO_TO;
+            context.bindings.from = process.env.TWILIO_FROM;
+            context.bindings.message = {
+                body: msg,
+                to: process.env.TWILIO_TO
+            };
             context.done();
         }
   });

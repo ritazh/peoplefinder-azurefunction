@@ -5,6 +5,16 @@
       "type": "timerTrigger",
       "direction": "in",
       "schedule": "0 */1 * * * *"
+    },
+    {
+      "type": "twilioSms",
+      "name": "message",
+      "accountSid": "TWILIO_ID",
+      "authToken": "TWILIO_KEY",
+      "to": "",
+      "from": "",
+      "body": "Test from azure function",
+      "direction": "out"
     }
   ],
   "disabled": false
