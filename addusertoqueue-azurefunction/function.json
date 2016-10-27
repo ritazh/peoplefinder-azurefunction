@@ -1,0 +1,18 @@
+﻿{
+  "bindings": [
+    {
+      "name": "myTimer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule": "0 */1 * * * *"
+    },
+    {
+      "type": "queue",
+      "name": "outputQueueItem",
+      "queueName": "myqueue",
+      "connection": "dosttpeoplefinder_STORAGE",
+      "direction": "out"
+    }
+  ],
+  "disabled": false
+}

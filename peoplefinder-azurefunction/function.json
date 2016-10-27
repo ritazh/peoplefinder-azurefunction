@@ -1,10 +1,11 @@
 ﻿{
   "bindings": [
     {
-      "name": "myTimer",
-      "type": "timerTrigger",
-      "direction": "in",
-      "schedule": "0 */1 * * * *"
+      "type": "queueTrigger",
+      "name": "inputQueueItem",
+      "queueName": "myqueue",
+      "connection": "dosttpeoplefinder_STORAGE",
+      "direction": "in"
     },
     {
       "type": "twilioSms",

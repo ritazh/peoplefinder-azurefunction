@@ -4,28 +4,24 @@ let request = require('request'),
 
 const connectionString = process.env.DBCONNECT;
 
-module.exports = function (context, myTimer) {
-    var timeStamp = new Date().toISOString();
-    context.log(timeStamp);
+module.exports = function (context, inputQueueItem) {
+    context.log(inputQueueItem);
     
-    if(myTimer.isPastDue)
+    if(!inputQueueItem)
     {
-        context.log('Node.js is running late!');
+        context.log('inputQueueItem is null');
+        context.done();
     }
-    context.log('Node.js timer trigger function ran!', timeStamp); 
+    context.log('Node.js queue function ran!'); 
 
-    mongo.connect(connectionString, function(err, db) {
-      assert.equal(null, err);
-      var col = db.collection('_User');
-      col.find({chanceEncounterMode:true},{username:1,Location:1,_id:0}).toArray(function(err, docs) {
-        context.log(JSON.stringify(docs));
-      });
-      db.close();
-    });
+    var user = inputQueueItem;
+    ///TODO: Find match for this user
 
-    var msg = 'Found a match for you!';
 
-    request.post({
+    var msg = 'Found a match for you, ' + user;
+
+    if (user){
+      request.post({
         url: process.env.PARSEPUSHURL,
         headers: {
             'X-Parse-Application-Id': process.env.APP_ID,
@@ -40,22 +36,26 @@ module.exports = function (context, myTimer) {
                 'alert': msg
             }
         }
-    }, function(err, resp) {
-        context.log('got resp');
-        if(err) context.log(err);
-        try {
-            //context.log(resp);
-        } catch(e) {
-            context.log(e);
-        } finally {
-            context.log('sending SMS...');
+      }, function(err, resp) {
+          context.log('got resp');
+          if(err) context.log(err);
+          try {
+              //context.log(resp);
+          } catch(e) {
+              context.log(e);
+          } finally {
+              context.log('sending SMS...');
 
-            context.bindings.message = {
-                body: msg,
-                to: process.env.TWILIO_TO,
-                from: process.env.TWILIO_FROM
-            };
-            context.done();
-        }
-  });
+              context.bindings.message = {
+                  body: msg,
+                  to: process.env.TWILIO_TO,
+                  from: process.env.TWILIO_FROM
+              };
+              context.done();
+          }
+      });
+    }else{
+      context.done();
+    }
+    
 };

@@ -1,7 +1,7 @@
 {
-  "name": "peoplefinder-azurefunction",
+  "name": "addusertoqueue-azurefunction",
   "version": "1.0.0",
-  "description": "Find people with common interests written with Azure Function",
+  "description": "Add user to queue to do some work written with Azure Function",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,8 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "assert": "^1.4.1",
-    "mongodb": "^2.2.11",
-    "request": "^2.76.0"
+    "mongodb": "^2.2.11"
   },
   "bugs": {
     "url": "https://github.com/ritazh/peoplefinder-azurefunction/issues"
