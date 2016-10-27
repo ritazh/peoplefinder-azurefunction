@@ -3,7 +3,7 @@
     {
       "type": "queueTrigger",
       "name": "inputQueueItem",
-      "queueName": "myqueue",
+      "queueName": "outqueue",
       "connection": "dosttpeoplefinder_STORAGE",
       "direction": "in"
     },

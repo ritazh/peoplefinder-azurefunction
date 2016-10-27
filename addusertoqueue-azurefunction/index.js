@@ -21,16 +21,21 @@ module.exports = function (context, myTimer) {
         context.log(JSON.stringify(docs));
         context.log(docs.length);
         if (docs.length > 0){
-          context.log('set user');
+          context.log('adding user');
           user = docs[0];
-          context.log(user.username);
+          var username = user.username;
+          context.log(username);
           // Add user to queue
-          context.bindings.outputQueueItem = user.username;
+          context.bindings.outputQueueItem = username;
+          context.done();
+        } else{
+          context.log('no user added');
+          context.done();
         }
       });
       db.close();
     });
 
-    context.done();
+    
     
 };
