@@ -22,19 +22,25 @@ module.exports = function (context, inputQueueItem) {
   mongo.connect(connectionString, function (err, db) {
     assert.equal(null, err);
     var users = db.collection('_User');
-    users.find({ username: user }, { Interests: 1, _id: 0, screenName: 1, phone: 1}).toArray(function (err, docs) {
+    users.find({ username: user }, { Interests: 1, matchHistory:1, _id: 0, screenName: 1, phone: 1}).toArray(function (err, docs) {
         context.log(docs.length);
         context.log(JSON.stringify(docs));
 
         if (docs.length > 0){
-          var userInterests = docs[0].Interests;
+          let userInterests = docs[0].Interests;
+          let userMatchHistory = docs[0].matchHistory;
           screenName = docs[0].screenName;
           phone = docs[0].phone;
           context.log(userInterests);
           context.log(phone);
 
           users.aggregate([
-              { $match: { username: {$ne: user}, Interests: { $in: userInterests } } },
+              { $match: { $and: [
+                {username: { $ne: user }},
+                {username: {$not: {$in: userMatchHistory}}},
+                {Interests: { $in: userInterests }}
+                ] } },
+              
               {
                   $project: {
                     "username": 1,
@@ -44,12 +50,27 @@ module.exports = function (context, inputQueueItem) {
                     "matchSize": { $size: { $setIntersection: [userInterests, "$Interests"] } }
                   }
               },
+            { $match: { matchSize: {$gte: 2}}}, // only allow chance encounters with multiple matching interests
             { $sort: { matchSize: -1 } },
             { $limit: 2 }
           ]).toArray(function (err, matchdocs) {
               context.log('after get matchdocs');
               context.log(matchdocs);
 
+              // if we found matches, add them to match history
+              if(matchdocs.length > 0) {
+                let matchingUsernames = [];
+                matchdocs.forEach(function (item) {
+                    matchingUsernames.push(item.username);
+                });
+
+                users.update(
+                    { username: user },
+                    { $push: { matchHistory: { $each: matchingUsernames } } }
+                );
+              }
+              
+              // send notifications for each match
               var friends = '';
               for (var i = 0; i < matchdocs.length; i++){
                 context.log(matchdocs[i]);
